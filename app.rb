@@ -100,7 +100,7 @@ module Isuconp
       def make_posts(results, all_comments: false)
         posts = []
         results.to_a.each do |post|
-          post[:comment_count] = db.prepare('SELECT COUNT(*) AS `count` FROM `comments` WHERE `post_id` = ?').execute(
+          post[:comment_count] = db.prepare('SELECT COUNT(id) AS `count` FROM `comments` WHERE `post_id` = ?').execute(
             post[:id]
           ).first[:count]
 
@@ -243,7 +243,7 @@ module Isuconp
       )
       posts = make_posts(results)
 
-      comment_count = db.prepare('SELECT COUNT(*) AS count FROM `comments` WHERE `user_id` = ?').execute(
+      comment_count = db.prepare('SELECT COUNT(id) AS count FROM `comments` WHERE `user_id` = ?').execute(
         user[:id]
       ).first[:count]
 
@@ -255,7 +255,7 @@ module Isuconp
       commented_count = 0
       if post_count > 0
         placeholder = (['?'] * post_ids.length).join(",")
-        commented_count = db.prepare("SELECT COUNT(*) AS count FROM `comments` WHERE `post_id` IN (#{placeholder})").execute(
+        commented_count = db.prepare("SELECT COUNT(id) AS count FROM `comments` WHERE `post_id` IN (#{placeholder})").execute(
           *post_ids
         ).first[:count]
       end
